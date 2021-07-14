@@ -33,20 +33,16 @@ func TestPDNSClient(t *testing.T) {
 	if err != nil {
 		t.Fatalf("docker-compose failed: %s", err)
 	}
+	err = runCmd(dockerCompose, "up", "-d")
 	if err != nil {
 		t.Fatalf("docker-compose failed: %s", err)
 	}
-
-	err = runCmd(dockerCompose, "up", "-d")
 	defer func() {
 		if skipCleanup, _ := strconv.ParseBool(os.Getenv("PDNS_SKIP_CLEANUP")); !skipCleanup {
 			runCmd(dockerCompose, "down", "-v")
 		}
 	}()
-	c, err := newClient("localhost", "http://localhost:8081", "secret", nil)
-	if err != nil {
-		t.Fatalf("failed client create: %s", err)
-	}
+
 
 	time.Sleep(time.Second * 30) // give everything time to finish coming up
 	z := zones.Zone{
@@ -103,17 +99,22 @@ func TestPDNSClient(t *testing.T) {
 			"ns2.example.org.",
 		},
 	}
-	_, err = c.Client.Zones().CreateZone(context.Background(), c.sID, z)
-	if err != nil {
-		t.Fatalf("failed to create test zone: %s", err)
-	}
-
 	p := &Provider{
 		ServerURL: "http://localhost:8081",
 		ServerID:  "localhost",
 		APIToken:  "secret",
 		Debug:     os.Getenv("PDNS_DEBUG"),
 	}
+	c, err := p.client()
+	if err != nil {
+		t.Fatalf("could not create client: %s", err)
+	}
+	_, err = c.Client.Zones().CreateZone(context.Background(), c.sID, z)
+	if err != nil {
+		t.Fatalf("failed to create test zone: %s", err)
+	}
+
+
 	for _, table := range []struct {
 		name      string
 		operation string
