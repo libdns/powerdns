@@ -1,7 +1,7 @@
 powerdns provider for [`libdns`](https://github.com/libdns/libdns)
 =======================
 
-[![Go](https://github.com/libdns/powerdns/actions/workflows/go.yml/badge.svg])(https://github.com/libdns/powerdns/actions/workflows/go.yml)[![Go Reference](https://pkg.go.dev/badge/test.svg)](https://pkg.go.dev/github.com/libdns/powerdns)
+[![Go](https://github.com/libdns/powerdns/actions/workflows/go.yml/badge.svg]](https://github.com/libdns/powerdns/actions/workflows/go.yml)[![Go Reference](https://pkg.go.dev/badge/test.svg)](https://pkg.go.dev/github.com/libdns/powerdns)
 
 This package implements the [libdns interfaces](https://github.com/libdns/libdns) for 
 [PowerDNS](https://powerdns.com/), allowing you to 
