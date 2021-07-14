@@ -22,4 +22,7 @@ jobs:
       run: go build -v ./...
 
     - name: Test
-      run: go test -v ./...
+      env:
+        PDNS_RUN_INTEGRATION_TEST: 1  
+      run: |
+        go test -v
