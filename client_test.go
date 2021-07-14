@@ -1,4 +1,4 @@
-package pdnsprovider
+package powerdns
 
 import (
 	"context"

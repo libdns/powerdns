@@ -1,4 +1,4 @@
-module github.com/nathanejohnson/pdnsprovider
+module github.com/libdns/powerdns
 
 go 1.16
 

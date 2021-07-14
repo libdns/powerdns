@@ -5,11 +5,11 @@ import (
 
 	"github.com/libdns/libdns"
 
-	"github.com/nathanejohnson/pdnsprovider"
+	"github.com/libdns/powerdns"
 )
 
 func main() {
-	p := &pdnsprovider.Provider{
+	p := &powerdns.Provider{
 		ServerURL: "http://localhost", // required
 		ServerID:  "localhost",        // if left empty, defaults to localhost.
 		APIToken:  "asdfasdfasdf",     // required
@@ -17,8 +17,8 @@ func main() {
 
 	_, err := p.AppendRecords(context.Background(), "example.org.", []libdns.Record{
 		{
-			Name: "_acme_whatever",
-			Type: "TXT",
+			Name:  "_acme_whatever",
+			Type:  "TXT",
 			Value: "123456",
 		},
 	})

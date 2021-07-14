@@ -1,5 +1,5 @@
 // Package powerdns implements a powerdns
-package pdnsprovider
+package powerdns
 
 import (
 	"context"
