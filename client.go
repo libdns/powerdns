@@ -104,7 +104,6 @@ func cullRRecs(fullZone *zones.Zone, records []libdns.Record) []zones.ResourceRe
 		}
 	}
 	return rRSets
-
 }
 
 // remove culls from rRSet record values
@@ -205,6 +204,10 @@ func convertNamesToAbsolute(zone string, records []libdns.Record) []libdns.Recor
 			name = name + "."
 		}
 		out[i].Name = name
+
+		if out[i].Type == "TXT" && !strings.HasPrefix(out[i].Value, "\"") {
+			out[i].Value = "\"" + out[i].Value + "\""
+		}
 	}
 	return out
 }
