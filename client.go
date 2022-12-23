@@ -3,6 +3,7 @@ package powerdns
 import (
 	"context"
 	"fmt"
+	"github.com/libdns/powerdns/txtsanitize"
 	"io"
 	"io/ioutil"
 	"strings"
@@ -205,6 +206,9 @@ func convertNamesToAbsolute(zone string, records []libdns.Record) []libdns.Recor
 			name = name + "."
 		}
 		out[i].Name = name
+		if out[i].Type == "TXT" {
+			out[i].Value = txtsanitize.TXTSanitize(out[i].Value)
+		}
 	}
 	return out
 }

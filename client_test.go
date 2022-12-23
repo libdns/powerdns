@@ -43,7 +43,6 @@ func TestPDNSClient(t *testing.T) {
 		}
 	}()
 
-
 	time.Sleep(time.Second * 30) // give everything time to finish coming up
 	z := zones.Zone{
 		Name: "example.org.",
@@ -114,7 +113,6 @@ func TestPDNSClient(t *testing.T) {
 		t.Fatalf("failed to create test zone: %s", err)
 	}
 
-
 	for _, table := range []struct {
 		name      string
 		operation string
@@ -158,7 +156,62 @@ func TestPDNSClient(t *testing.T) {
 					Value: "\"This is also some text\"",
 				},
 			},
-			want: []string{"1:\"This is text\"", "1:\"This is also some text\""},
+			want: []string{
+				`1:"This is text"`,
+				`1:"This is also some text"`,
+			},
+		},
+		{
+			name:      "Test Append Zone TXT record with weird formatting",
+			operation: "append",
+			zone:      "example.org.",
+			Type:      "TXT",
+			records: []libdns.Record{
+				{
+					Name:  "1",
+					Type:  "TXT",
+					Value: "This is some weird text that isn't quoted",
+				},
+			},
+			want: []string{
+				`1:"This is text"`,
+				`1:"This is also some text"`,
+				`1:"This is some weird text that isn't quoted"`,
+			},
+		},
+		{
+			name:      "Test Append Zone TXT record with embedded quotes",
+			operation: "append",
+			zone:      "example.org.",
+			Type:      "TXT",
+			records: []libdns.Record{
+				{
+					Name:  "1",
+					Type:  "TXT",
+					Value: `This is some weird text that "has embedded quoting"`,
+				},
+			},
+			want: []string{`1:"This is text"`, `1:"This is also some text"`,
+				`1:"This is some weird text that isn't quoted"`,
+				`1:"This is some weird text that \"has embedded quoting\""`},
+		},
+		{
+			name:      "Test Append Zone TXT record with unicode",
+			operation: "append",
+			zone:      "example.org.",
+			Type:      "TXT",
+			records: []libdns.Record{
+				{
+					Name:  "1",
+					Type:  "TXT",
+					Value: `ç is equal to \195\167`,
+				},
+			},
+			want: []string{`1:"This is text"`, `1:"This is also some text"`,
+				`1:"This is some weird text that isn't quoted"`,
+				`1:"This is some weird text that \"has embedded quoting\""`,
+				`1:"ç is equal to \195\167"`,
+			},
 		},
 		{
 			name:      "Test Delete Zone",
