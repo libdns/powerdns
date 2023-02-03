@@ -23,6 +23,6 @@ jobs:
 
     - name: Test
       env:
-        PDNS_RUN_INTEGRATION_TEST: 1  
+        PDNS_RUN_INTEGRATION_TEST: 1
       run: |
-        go test -v
+        go test -v ./...
