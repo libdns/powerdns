@@ -114,8 +114,7 @@ func removeRecords(rRSet zones.ResourceRecordSet, culls []libdns.Record) zones.R
 		recs := rRSet.Records
 		for i := len(recs) - 1; i >= 0; i-- {
 			if recs[i].Content == item {
-				copy(recs[i:], recs[:i+1])
-				recs = recs[:len(recs)-1]
+				recs = append(recs[:i], recs[i+1:]...)
 			}
 		}
 		return recs
