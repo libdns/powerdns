@@ -51,9 +51,9 @@ func (p *Provider) GetRecords(ctx context.Context, zone string) ([]libdns.Record
 				ID:       prec.ID,
 				Type:     rec.Type,
 				Name:     libdns.RelativeName(rec.Name, zone),
-				Value:    v.Content,
+				Value:    getValueFromPdnsRecordContent(v.Content),
 				TTL:      time.Second * time.Duration(rec.TTL),
-				Priority: 0,
+				Priority: getPriorityFromPdnsRecordContent(v.Content),
 			})
 		}
 	}
