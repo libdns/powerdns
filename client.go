@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/libdns/powerdns/txtsanitize"
 	"io"
-	"io/ioutil"
 	"strings"
 
 	"github.com/libdns/libdns"
@@ -20,7 +19,7 @@ type client struct {
 
 func newClient(ServerID, ServerURL, APIToken string, debug io.Writer) (*client, error) {
 	if debug == nil {
-		debug = ioutil.Discard
+		debug = io.Discard
 	}
 	c, err := pdns.New(
 		pdns.WithBaseURL(ServerURL),
