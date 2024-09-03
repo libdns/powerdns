@@ -10,6 +10,8 @@ github.com/mittwald/go-powerdns v0.5.2 h1:kfqr9ZNIuxOjjBaoJcOFiy/19VmKEUgfJPmObD
 github.com/mittwald/go-powerdns v0.5.2/go.mod h1:bI/sZBAWyTViDknOTp19VfDxVEnh1U7rWPx2aRKtlzg=
 github.com/mittwald/go-powerdns v0.6.3 h1:t7HhWNosL+To+gJ+K4TRh1sZiFtB64ZrRlVvKPkpRGw=
 github.com/mittwald/go-powerdns v0.6.3/go.mod h1:adWJ860laOgm14afg+7V0nCa5NQT37oEYe2HRhoS/CA=
+github.com/mittwald/go-powerdns v0.6.6 h1:yQcuszhl98+jJgELjD5ecfxCQWoshhnArexpwrwQxLY=
+github.com/mittwald/go-powerdns v0.6.6/go.mod h1:adWJ860laOgm14afg+7V0nCa5NQT37oEYe2HRhoS/CA=
 github.com/nbio/st v0.0.0-20140626010706-e9e8d9816f32/go.mod h1:9wM+0iRr9ahx58uYLpLIr5fm8diHn0JbqRycJi6w0Ms=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
