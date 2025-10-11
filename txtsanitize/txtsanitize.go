@@ -33,7 +33,7 @@ func TXTSanitize(in string) string {
 		bldr.Write(contents[ind : ind+tInd])
 		ind += tInd
 
-		// look for \", but be aware of \\" is not escaped, but \\\" is
+		// look for \", but be aware of \\\" is not escaped, but \\\\\" is
 		escCt := 0
 		for j := ind - 1; j >= 0 && contents[j] == '\\'; j-- {
 			escCt++

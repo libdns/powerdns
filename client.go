@@ -56,15 +56,18 @@ func mergeRRecs(fullZone *zones.Zone, records []libdns.Record) ([]zones.Resource
 	for _, t := range fullZone.ResourceRecordSets {
 		k := key(t.Name, t.Type)
 		if recs, ok := inHash[k]; ok && len(recs) > 0 {
-			rr := zones.ResourceRecordSet{
+			// Convert first record to RR to get TTL
+			rr0 := recs[0].RR()
+			
+			rrset := zones.ResourceRecordSet{
 				Name:       t.Name,
 				Type:       t.Type,
-				TTL:        int(recs[0].TTL.Seconds()),
+				TTL:        int(rr0.TTL.Seconds()),
 				ChangeType: zones.ChangeTypeReplace,
 				Comments:   t.Comments,
 				Records:    make([]zones.Record, len(t.Records)),
 			}
-			copy(rr.Records, t.Records)
+			copy(rrset.Records, t.Records)
 			// squash duplicate values
 			dupes := make(map[string]bool)
 			for _, prec := range t.Records {
@@ -72,14 +75,15 @@ func mergeRRecs(fullZone *zones.Zone, records []libdns.Record) ([]zones.Resource
 			}
 			// now for our additions
 			for _, rec := range recs {
-				if !dupes[rec.Value] {
-					rr.Records = append(rr.Records, zones.Record{
-						Content: rec.Value,
+				recRR := rec.RR()
+				if !dupes[recRR.Data] {
+					rrset.Records = append(rrset.Records, zones.Record{
+						Content: recRR.Data,
 					})
-					dupes[rec.Value] = true
+					dupes[recRR.Data] = true
 				}
 			}
-			rrsets = append(rrsets, rr)
+			rrsets = append(rrsets, rrset)
 			delete(inHash, k)
 		}
 	}
@@ -121,7 +125,8 @@ func removeRecords(rRSet zones.ResourceRecordSet, culls []libdns.Record) zones.R
 		return recs
 	}
 	for _, c := range culls {
-		rRSet.Records = deleteItem(c.Value)
+		cRR := c.RR()
+		rRSet.Records = deleteItem(cRR.Data)
 	}
 	return rRSet
 }
@@ -133,15 +138,19 @@ func convertLDHash(inHash map[string][]libdns.Record) []zones.ResourceRecordSet 
 			continue
 		}
 
+		// Convert first record to RR
+		rec0RR := recs[0].RR()
+		
 		rr := zones.ResourceRecordSet{
-			Name:       recs[0].Name,
-			Type:       recs[0].Type,
-			TTL:        int(recs[0].TTL.Seconds()),
+			Name:       rec0RR.Name,
+			Type:       rec0RR.Type,
+			TTL:        int(rec0RR.TTL.Seconds()),
 			ChangeType: zones.ChangeTypeReplace,
 		}
 		for _, rec := range recs {
+			recRR := rec.RR()
 			rr.Records = append(rr.Records, zones.Record{
-				Content: rec.Value,
+				Content: recRR.Data,
 			})
 		}
 		rrsets = append(rrsets, rr)
@@ -158,7 +167,8 @@ func makeLDRecHash(records []libdns.Record) map[string][]libdns.Record {
 	inHash := make(map[string][]libdns.Record)
 
 	for _, r := range records {
-		k := key(r.Name, r.Type)
+		rRR := r.RR()
+		k := key(rRR.Name, rRR.Type)
 		inHash[k] = append(inHash[k], r)
 	}
 	return inHash
@@ -201,14 +211,16 @@ func convertNamesToAbsolute(zone string, records []libdns.Record) []libdns.Recor
 	out := make([]libdns.Record, len(records))
 	copy(out, records)
 	for i := range out {
-		name := libdns.AbsoluteName(out[i].Name, zone)
+		outRR := out[i].RR()
+		name := libdns.AbsoluteName(outRR.Name, zone)
 		if !strings.HasSuffix(name, ".") {
 			name = name + "."
 		}
-		out[i].Name = name
-		if out[i].Type == "TXT" {
-			out[i].Value = txtsanitize.TXTSanitize(out[i].Value)
+		outRR.Name = name
+		if outRR.Type == "TXT" {
+			outRR.Data = txtsanitize.TXTSanitize(outRR.Data)
 		}
+		out[i] = outRR
 	}
 	return out
 }
