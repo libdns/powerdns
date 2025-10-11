@@ -47,14 +47,14 @@ func (p *Provider) GetRecords(ctx context.Context, zone string) ([]libdns.Record
 	recs := make([]libdns.Record, 0, len(prec.ResourceRecordSets))
 	for _, rec := range prec.ResourceRecordSets {
 		for _, v := range rec.Records {
-			recs = append(recs, libdns.Record{
-				ID:       prec.ID,
+			// Create RR struct for the new API
+			rr := libdns.RR{
 				Type:     rec.Type,
 				Name:     libdns.RelativeName(rec.Name, zone),
-				Value:    v.Content,
+				Data:     v.Content,
 				TTL:      time.Second * time.Duration(rec.TTL),
-				Priority: 0,
-			})
+			}
+			recs = append(recs, rr)
 		}
 	}
 	return recs, nil
